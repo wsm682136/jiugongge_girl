@@ -168,8 +168,7 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 quit()
-            if finish:
-                continue
+
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     pygame.quit()
@@ -211,15 +210,18 @@ def main():
                     print("begin")
                     img2, cellWidth, cellHeight, finish, gameBoard, blackCell, windowSurface, mainClock, rnum = begin(
                         imgl)
-
                     pass
 
                 if bx2 <= x <= bx2 + bw and by2 <= y <= by2 + bh:
-                    print("Refresh")
-                    gameBoard, blackCell = newGameBoard()
-                    pygame.display.flip()
-
+                    if finish == False:
+                        print("Refresh")
+                        gameBoard, blackCell = newGameBoard()
+                        pygame.display.flip()
                     pass
+
+            if finish:
+                continue
+
         if (isFinished(gameBoard, blackCell)):
             gameBoard[blackCell] = CELLNUMS - 1
 
