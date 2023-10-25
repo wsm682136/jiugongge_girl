@@ -144,9 +144,15 @@ def main():
 
     font = pygame.font.Font('C:\Windows\Fonts\simhei.ttf', 30)
 
-    bx, by, bw, bh = 100, WIN_HEIGHT + 20, 100, 50
+    bx, by, bw, bh = 40, WIN_HEIGHT + 20, 100, 50
     pygame.draw.rect(windowSurface, RED, (bx, by, bw, bh))
     text = font.render('删除', True, WHITE)
+    tw, th = text.get_size()
+    windowSurface.blit(text, (bx + bw / 2 - tw / 2, by + bh / 2 - th / 2))
+
+    bx, by, bw, bh = 140, WIN_HEIGHT + 20, 100, 50
+    pygame.draw.rect(windowSurface, RED, (bx, by, bw, bh))
+    text = font.render('刷新', True, WHITE)
     tw, th = text.get_size()
     windowSurface.blit(text, (bx + bw / 2 - tw / 2, by + bh / 2 - th / 2))
 
@@ -202,10 +208,16 @@ def main():
                     pass
 
                 if bx1 <= x <= bx1 + bw1 and by1 <= y <= by1 + bh:
-                    finish = False
                     print("begin")
                     img2, cellWidth, cellHeight, finish, gameBoard, blackCell, windowSurface, mainClock, rnum = begin(
                         imgl)
+
+                    pass
+
+                if bx2 <= x <= bx2 + bw and by2 <= y <= by2 + bh:
+                    print("Refresh")
+                    gameBoard, blackCell = newGameBoard()
+                    pygame.display.flip()
 
                     pass
         if (isFinished(gameBoard, blackCell)):
@@ -214,11 +226,17 @@ def main():
             finish = True
         windowSurface.fill(BLACK)
 
-        bx, by, bw, bh = 100, WIN_HEIGHT + 20, 100, 50
+        bx, by, bw, bh = 40, WIN_HEIGHT + 20, 100, 50
         pygame.draw.rect(windowSurface, RED, (bx, by, bw, bh))
         text = font.render('删除', True, WHITE)
         tw, th = text.get_size()
         windowSurface.blit(text, (bx + bw / 2 - tw / 2, by + bh / 2 - th / 2))
+
+        bx2, by2, bw, bh = 160, WIN_HEIGHT + 20, 100, 50
+        pygame.draw.rect(windowSurface, RED, (bx2, by2, bw, bh))
+        text = font.render('刷新', True, WHITE)
+        tw2, th2 = text.get_size()
+        windowSurface.blit(text, (bx2 + bw / 2 - tw2 / 2, by2 + bh / 2 - th2 / 2))
 
         bx1, by1, bw1, bh = 300, WIN_HEIGHT + 20, 150, 50
         pygame.draw.rect(windowSurface, GREEN, (bx1, by1, bw1, bh))
