@@ -3,4 +3,4 @@
 读取本地图片
 
 
-pyinstaller -F jjg.py  # 打包exe执行文件
+pyinstaller -F *.py  # 打包exe执行文件
