@@ -145,23 +145,23 @@ def main():
 
     font = pygame.font.Font('C:\\Windows\\Fonts\\simhei.ttf', 30)
 
-    bx, by, bw, bh = 40, WIN_HEIGHT + 20, 100, 50
-    pygame.draw.rect(windowSurface, RED, (bx, by, bw, bh))
-    text = font.render('删除', True, WHITE)
-    tw, th = text.get_size()
-    windowSurface.blit(text, (bx + bw / 2 - tw / 2, by + bh / 2 - th / 2))
-
-    bx, by, bw, bh = 140, WIN_HEIGHT + 20, 100, 50
-    pygame.draw.rect(windowSurface, RED, (bx, by, bw, bh))
-    text = font.render('刷新', True, WHITE)
-    tw, th = text.get_size()
-    windowSurface.blit(text, (bx + bw / 2 - tw / 2, by + bh / 2 - th / 2))
-
-    bx1, by1, bw1, bh = 300, WIN_HEIGHT + 20, 150, 50
-    pygame.draw.rect(windowSurface, GREEN, (bx1, by1, bw1, bh))
-    text = font.render('开始游戏', True, WHITE)
-    tw1, th1 = text.get_size()
-    windowSurface.blit(text, (bx1 + bw1 / 2 - tw1 / 2, by1 + bh / 2 - th1 / 2))
+    # bx, by, bw, bh = 40, WIN_HEIGHT + 20, 100, 50
+    # pygame.draw.rect(windowSurface, RED, (bx, by, bw, bh))
+    # text = font.render('删除', True, WHITE)
+    # tw, th = text.get_size()
+    # windowSurface.blit(text, (bx + bw / 2 - tw / 2, by + bh / 2 - th / 2))
+    #
+    # bx, by, bw, bh = 140, WIN_HEIGHT + 20, 100, 50
+    # pygame.draw.rect(windowSurface, RED, (bx, by, bw, bh))
+    # text = font.render('刷新', True, WHITE)
+    # tw, th = text.get_size()
+    # windowSurface.blit(text, (bx + bw / 2 - tw / 2, by + bh / 2 - th / 2))
+    #
+    # bx1, by1, bw1, bh = 300, WIN_HEIGHT + 20, 150, 50
+    # pygame.draw.rect(windowSurface, GREEN, (bx1, by1, bw1, bh))
+    # text = font.render('开始游戏', True, WHITE)
+    # tw1, th1 = text.get_size()
+    # windowSurface.blit(text, (bx1 + bw1 / 2 - tw1 / 2, by1 + bh / 2 - th1 / 2))
 
     pygame.display.update()
 
@@ -172,27 +172,29 @@ def main():
 
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    pygame.quit()
-                if event.key == K_LEFT or event.key == ord('a'):
-                    blackCell = moveLeft(gameBoard, blackCell)
-                if event.key == K_RIGHT or event.key == ord('d'):
-                    blackCell = moveRight(gameBoard, blackCell)
-                if event.key == K_UP or event.key == ord('w'):
-                    blackCell = moveUp(gameBoard, blackCell)
-                if event.key == K_DOWN or event.key == ord('s'):
-                    blackCell = moveRight(gameBoard, blackCell)
-            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    quit()
+                # if event.key == K_LEFT or event.key == ord('a'):
+                #     blackCell = moveLeft(gameBoard, blackCell)
+                # if event.key == K_RIGHT or event.key == ord('d'):
+                #     blackCell = moveRight(gameBoard, blackCell)
+                # if event.key == K_UP or event.key == ord('w'):
+                #     blackCell = moveUp(gameBoard, blackCell)
+                # if event.key == K_DOWN or event.key == ord('s'):
+                #     blackCell = moveRight(gameBoard, blackCell)
+            if event.type == MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
                 col = int(x / cellWidth)
                 row = int(y / cellHeight)
                 index = col + row * VHNUMS
+                # print("col ", col, " row ", row, " index ", index, " blackCell ", blackCell, " VHNUMS ", VHNUMS)
                 if (
                         index == blackCell - 1 or index == blackCell + 1 or index == blackCell - VHNUMS or index == blackCell + VHNUMS):
                     gameBoard[blackCell], gameBoard[index] = gameBoard[index], gameBoard[blackCell]
                     blackCell = index
 
                 if bx <= x <= bx + bw and by <= y <= by + bh:
-                    print(ARR[rnum])
+                    print("删除")
+                    finish = False
                     if os.path.isfile(ARR[rnum]):
                         # os.remove(ARR[rnum])
                         if not DEBUG:
@@ -204,29 +206,26 @@ def main():
                         print('del over; leave is ', len(ARR))
                         img2, cellWidth, cellHeight, finish, gameBoard, blackCell, windowSurface, mainClock, rnum = begin(
                             imgl)
-                        pass
-                    pass
 
                 if bx1 <= x <= bx1 + bw1 and by1 <= y <= by1 + bh:
-                    print("begin")
+                    print("刷新")
+                    finish = False
                     img2, cellWidth, cellHeight, finish, gameBoard, blackCell, windowSurface, mainClock, rnum = begin(
                         imgl)
-                    pass
 
                 if bx2 <= x <= bx2 + bw and by2 <= y <= by2 + bh:
+                    print("开始")
                     if finish == False:
-                        print("Refresh")
                         gameBoard, blackCell = newGameBoard()
                         pygame.display.flip()
-                    pass
 
             if finish:
                 continue
 
         if (isFinished(gameBoard, blackCell)):
             gameBoard[blackCell] = CELLNUMS - 1
-
             finish = True
+
         windowSurface.fill(BLACK)
 
         bx, by, bw, bh = 40, WIN_HEIGHT + 20, 100, 50
