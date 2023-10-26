@@ -107,6 +107,7 @@ def begin(imgl):
     mainClock = pygame.time.Clock()
 
     rnum = random.randint(0, imgl)
+    print("index is ", rnum, " addr is ", ARR[rnum])
     gameImage = pygame.image.load(ARR[rnum])
     # gameImage = pygame.image.load(ARR[268])
     print(ARR[rnum])
@@ -142,7 +143,7 @@ def main():
 
     img2, cellWidth, cellHeight, finish, gameBoard, blackCell, windowSurface, mainClock, rnum = begin(imgl)
 
-    font = pygame.font.Font('C:\Windows\Fonts\simhei.ttf', 30)
+    font = pygame.font.Font('C:\\Windows\\Fonts\\simhei.ttf', 30)
 
     bx, by, bw, bh = 40, WIN_HEIGHT + 20, 100, 50
     pygame.draw.rect(windowSurface, RED, (bx, by, bw, bh))
@@ -200,7 +201,7 @@ def main():
                                                          None, None))  # 删除文件到回收站
                             if not res[1]:
                                 os.system('del ' + ARR[rnum])
-                        print('del over')
+                        print('del over; leave is ', len(ARR))
                         img2, cellWidth, cellHeight, finish, gameBoard, blackCell, windowSurface, mainClock, rnum = begin(
                             imgl)
                         pass
