@@ -65,7 +65,7 @@ def begin(imgl, index=0):
 
     newimg = pygame.transform.rotozoom(image, 0, tmp)
 
-    win = pygame.display.set_mode((newimg.get_width(), newimg.get_height() + 80))
+    win = pygame.display.set_mode((newimg.get_width(), newimg.get_height() + 80), pygame.RESIZABLE)
     # win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 
     pygame.display.set_caption('图片浏览')
@@ -73,7 +73,7 @@ def begin(imgl, index=0):
 
     font = pygame.font.Font('C:\Windows\Fonts\simhei.ttf', 26)
 
-    return win, newimg, font, rnum
+    return win, newimg, font, rnum, image
 
 
 def main():
@@ -85,7 +85,7 @@ def main():
     index = 0
     imgl = imglen(file)
 
-    win, newimg, font, rnum = begin(imgl, index)
+    win, newimg, font, rnum, image = begin(imgl, index)
     pygame.display.flip()
 
     while True:
@@ -93,15 +93,29 @@ def main():
             if event.type == pygame.QUIT:
                 quit()
             if event.type == pygame.KEYDOWN:
-
                 if event.key == pygame.K_ESCAPE:
                     quit()
+
+            if event.type == pygame.VIDEORESIZE:
+                w = event.w
+                h = event.h
+
+                r = h / image.get_height()
+                r1 = w / image.get_width()
+
+                tmp = min(r, r1)
+
+                newimg = pygame.transform.rotozoom(image, 0, tmp)
+
+                win = pygame.display.set_mode((newimg.get_width(), newimg.get_height() + 80), pygame.RESIZABLE)
+                win.blit(newimg, (0, 0))
+                pygame.display.update()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
 
                 if bx2 <= x <= bx2 + bw and by2 <= y <= by2 + bh:
-                    win, newimg, font, rnum = begin(imgl, index)
+                    win, newimg, font, rnum, image = begin(imgl, index)
 
                 if bx3 <= x <= bx3 + bw and by3 <= y <= by3 + bh:
                     if not DEBUG:
@@ -112,7 +126,7 @@ def main():
                             os.system('del ' + ARR[rnum])
                             ARR.pop(rnum)
                     print('del over; leave is ', len(ARR))
-                    win, newimg, font, rnum = begin(imgl, index)
+                    win, newimg, font, rnum, image = begin(imgl, index)
 
             bx2, by2, bw, bh = 160, newimg.get_height() + 20, 100, 50
             pygame.draw.rect(win, GREEN, (bx2, by2, bw, bh))
