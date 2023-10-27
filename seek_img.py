@@ -7,6 +7,7 @@ import random
 import sys
 import math
 from win32com.shell import shell, shellcon
+from Button import Button
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 900
@@ -20,6 +21,7 @@ CELLNUMS = VHNUMS * VHNUMS
 MACRANDTIME = 100
 ARR = []
 DEBUG = False
+FONT = 'C:\Windows\Fonts\simhei.ttf'
 
 
 def getimgs(file):
@@ -72,7 +74,7 @@ def begin(imgl, rnum=0):
     pygame.display.set_caption('图片浏览')
     win.blit(newimg, (0, 0))
 
-    font = pygame.font.Font('C:\Windows\Fonts\simhei.ttf', 26)
+    font = pygame.font.Font(FONT, 26)
 
     return win, newimg, font, rnum, image
 
@@ -83,11 +85,15 @@ def main():
     file = 'E:\\迅雷下载\\'
     if os.path.exists(file) == False:
         file = 'F:\\迅雷下载\\'
-    index = 0
-    imgl = imglen(file)
 
+    imgl = imglen(file)
     win, newimg, font, rnum, image = begin(imgl)
     pygame.display.flip()
+
+    # bx1, by1, bw, bh = 30, 100 + 20, 100, 50
+    # button = Button(bx1, by1, bw, bh, '上一页', GREEN, FONT)
+    # button.draw(win)
+    # pygame.display.update()
 
     while True:
         for event in pygame.event.get():
@@ -113,12 +119,12 @@ def main():
                 pygame.display.update()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = event.pos
 
-                if bx2 <= x <= bx2 + bw and by2 <= y <= by2 + bh:
+                if btn1.rect.collidepoint(event.pos):
+                    win, newimg, font, rnum, image = begin(imgl, rnum - 1)
+                if btn2.rect.collidepoint(event.pos):
                     win, newimg, font, rnum, image = begin(imgl)
-
-                if bx3 <= x <= bx3 + bw and by3 <= y <= by3 + bh:
+                if btn3.rect.collidepoint(event.pos):
                     if not DEBUG:
                         res = shell.SHFileOperation((0, shellcon.FO_DELETE, ARR[rnum], None,
                                                      shellcon.FOF_SILENT | shellcon.FOF_ALLOWUNDO | shellcon.FOF_NOCONFIRMATION,
@@ -128,36 +134,68 @@ def main():
                             ARR.pop(rnum)
                     print('del over; leave is ', len(ARR))
                     win, newimg, font, rnum, image = begin(imgl, rnum)
-
-                if bx1 <= x <= bx1 + bw and by1 <= y <= by1 + bh:
-                    win, newimg, font, rnum, image = begin(imgl, rnum - 1)
-
-                if bx4 <= x <= bx4 + bw and by4 <= y <= by4 + bh:
+                if btn4.rect.collidepoint(event.pos):
                     win, newimg, font, rnum, image = begin(imgl, rnum + 1)
 
-            bx1, by1, bw, bh = 30, newimg.get_height() + 20, 100, 50
-            pygame.draw.rect(win, GREEN, (bx1, by1, bw, bh))
-            text = font.render('上一页', True, WHITE)
-            tw1, th1 = text.get_size()
-            win.blit(text, (bx1 + bw / 2 - tw1 / 2, by1 + bh / 2 - th1 / 2))
+                # x, y = event.pos
 
-            bx2, by2, bw, bh = 290, newimg.get_height() + 20, 100, 50
-            pygame.draw.rect(win, GREEN, (bx2, by2, bw, bh))
-            text = font.render('刷新', True, WHITE)
-            tw2, th2 = text.get_size()
-            win.blit(text, (bx2 + bw / 2 - tw2 / 2, by2 + bh / 2 - th2 / 2))
+                # if bx2 <= x <= bx2 + bw and by2 <= y <= by2 + bh:
+                #     win, newimg, font, rnum, image = begin(imgl)
+                #
+                # if bx3 <= x <= bx3 + bw and by3 <= y <= by3 + bh:
+                #     if not DEBUG:
+                #         res = shell.SHFileOperation((0, shellcon.FO_DELETE, ARR[rnum], None,
+                #                                      shellcon.FOF_SILENT | shellcon.FOF_ALLOWUNDO | shellcon.FOF_NOCONFIRMATION,
+                #                                      None, None))  # 删除文件到回收站
+                #         if not res[1]:
+                #             os.system('del ' + ARR[rnum])
+                #             ARR.pop(rnum)
+                #     print('del over; leave is ', len(ARR))
+                #     win, newimg, font, rnum, image = begin(imgl, rnum)
+                #
+                # if bx1 <= x <= bx1 + bw and by1 <= y <= by1 + bh:
+                #     win, newimg, font, rnum, image = begin(imgl, rnum - 1)
+                #
+                # if bx4 <= x <= bx4 + bw and by4 <= y <= by4 + bh:
+                #     win, newimg, font, rnum, image = begin(imgl, rnum + 1)
 
-            bx3, by3, bw, bh = 400, newimg.get_height() + 20, 100, 50
-            pygame.draw.rect(win, RED, (bx3, by3, bw, bh))
-            text = font.render('删除', True, WHITE)
-            tw3, th3 = text.get_size()
-            win.blit(text, (bx3 + bw / 2 - tw3 / 2, by3 + bh / 2 - th3 / 2))
+            y, w, h = newimg.get_height() + 20, 100, 50
 
-            bx4, by4, bw, bh = 140, newimg.get_height() + 20, 100, 50
-            pygame.draw.rect(win, GREEN, (bx4, by4, bw, bh))
-            text = font.render('下一页', True, WHITE)
-            tw4, th4 = text.get_size()
-            win.blit(text, (bx4 + bw / 2 - tw4 / 2, by4 + bh / 2 - th4 / 2))
+            btn1 = Button(30, y, w, h, '上一页', GREEN, FONT)
+            btn1.draw(win)
+
+            btn2 = Button(290, y, w, h, '刷新', GREEN, FONT)
+            btn2.draw(win)
+
+            btn3 = Button(400, y, w, h, '删除', RED, FONT)
+            btn3.draw(win)
+
+            btn4 = Button(140, y, w, h, '下一页', GREEN, FONT)
+            btn4.draw(win)
+
+            # bx1, by1, bw, bh = 30, newimg.get_height() + 20, 100, 50
+            # pygame.draw.rect(win, GREEN, (bx1, by1, bw, bh))
+            # text = font.render('上一页', True, WHITE)
+            # tw1, th1 = text.get_size()
+            # win.blit(text, (bx1 + bw / 2 - tw1 / 2, by1 + bh / 2 - th1 / 2))
+
+            # bx2, by2, bw, bh = 290, newimg.get_height() + 20, 100, 50
+            # pygame.draw.rect(win, GREEN, (bx2, by2, bw, bh))
+            # text = font.render('刷新', True, WHITE)
+            # tw2, th2 = text.get_size()
+            # win.blit(text, (bx2 + bw / 2 - tw2 / 2, by2 + bh / 2 - th2 / 2))
+            #
+            # bx3, by3, bw, bh = 400, newimg.get_height() + 20, 100, 50
+            # pygame.draw.rect(win, RED, (bx3, by3, bw, bh))
+            # text = font.render('删除', True, WHITE)
+            # tw3, th3 = text.get_size()
+            # win.blit(text, (bx3 + bw / 2 - tw3 / 2, by3 + bh / 2 - th3 / 2))
+            #
+            # bx4, by4, bw, bh = 140, newimg.get_height() + 20, 100, 50
+            # pygame.draw.rect(win, GREEN, (bx4, by4, bw, bh))
+            # text = font.render('下一页', True, WHITE)
+            # tw4, th4 = text.get_size()
+            # win.blit(text, (bx4 + bw / 2 - tw4 / 2, by4 + bh / 2 - th4 / 2))
 
             pygame.display.update()
 
