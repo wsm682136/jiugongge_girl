@@ -141,19 +141,19 @@ def main():
             tw1, th1 = text.get_size()
             win.blit(text, (bx1 + bw / 2 - tw1 / 2, by1 + bh / 2 - th1 / 2))
 
-            bx2, by2, bw, bh = 160, newimg.get_height() + 20, 100, 50
+            bx2, by2, bw, bh = 290, newimg.get_height() + 20, 100, 50
             pygame.draw.rect(win, GREEN, (bx2, by2, bw, bh))
             text = font.render('刷新', True, WHITE)
             tw2, th2 = text.get_size()
             win.blit(text, (bx2 + bw / 2 - tw2 / 2, by2 + bh / 2 - th2 / 2))
 
-            bx3, by3, bw, bh = 280, newimg.get_height() + 20, 100, 50
+            bx3, by3, bw, bh = 400, newimg.get_height() + 20, 100, 50
             pygame.draw.rect(win, RED, (bx3, by3, bw, bh))
             text = font.render('删除', True, WHITE)
             tw3, th3 = text.get_size()
             win.blit(text, (bx3 + bw / 2 - tw3 / 2, by3 + bh / 2 - th3 / 2))
 
-            bx4, by4, bw, bh = 400, newimg.get_height() + 20, 100, 50
+            bx4, by4, bw, bh = 140, newimg.get_height() + 20, 100, 50
             pygame.draw.rect(win, GREEN, (bx4, by4, bw, bh))
             text = font.render('下一页', True, WHITE)
             tw4, th4 = text.get_size()
