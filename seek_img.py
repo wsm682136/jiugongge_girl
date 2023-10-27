@@ -41,8 +41,9 @@ def quit():
     sys.exit()
 
 
-def begin(imgl, index=0):
-    rnum = random.randint(index, imgl)
+def begin(imgl, rnum=0):
+    if rnum == 0:
+        rnum = random.randint(0, imgl)
     # rnum = 6749
     print("index is ", rnum, " addr is ", ARR[rnum])
     image = pygame.image.load(ARR[rnum])
@@ -85,7 +86,7 @@ def main():
     index = 0
     imgl = imglen(file)
 
-    win, newimg, font, rnum, image = begin(imgl, index)
+    win, newimg, font, rnum, image = begin(imgl)
     pygame.display.flip()
 
     while True:
@@ -115,7 +116,7 @@ def main():
                 x, y = event.pos
 
                 if bx2 <= x <= bx2 + bw and by2 <= y <= by2 + bh:
-                    win, newimg, font, rnum, image = begin(imgl, index)
+                    win, newimg, font, rnum, image = begin(imgl)
 
                 if bx3 <= x <= bx3 + bw and by3 <= y <= by3 + bh:
                     if not DEBUG:
@@ -126,7 +127,19 @@ def main():
                             os.system('del ' + ARR[rnum])
                             ARR.pop(rnum)
                     print('del over; leave is ', len(ARR))
-                    win, newimg, font, rnum, image = begin(imgl, index)
+                    win, newimg, font, rnum, image = begin(imgl, rnum)
+
+                if bx1 <= x <= bx1 + bw and by1 <= y <= by1 + bh:
+                    win, newimg, font, rnum, image = begin(imgl, rnum - 1)
+
+                if bx4 <= x <= bx4 + bw and by4 <= y <= by4 + bh:
+                    win, newimg, font, rnum, image = begin(imgl, rnum + 1)
+
+            bx1, by1, bw, bh = 30, newimg.get_height() + 20, 100, 50
+            pygame.draw.rect(win, GREEN, (bx1, by1, bw, bh))
+            text = font.render('上一页', True, WHITE)
+            tw1, th1 = text.get_size()
+            win.blit(text, (bx1 + bw / 2 - tw1 / 2, by1 + bh / 2 - th1 / 2))
 
             bx2, by2, bw, bh = 160, newimg.get_height() + 20, 100, 50
             pygame.draw.rect(win, GREEN, (bx2, by2, bw, bh))
@@ -139,6 +152,12 @@ def main():
             text = font.render('删除', True, WHITE)
             tw3, th3 = text.get_size()
             win.blit(text, (bx3 + bw / 2 - tw3 / 2, by3 + bh / 2 - th3 / 2))
+
+            bx4, by4, bw, bh = 400, newimg.get_height() + 20, 100, 50
+            pygame.draw.rect(win, GREEN, (bx4, by4, bw, bh))
+            text = font.render('下一页', True, WHITE)
+            tw4, th4 = text.get_size()
+            win.blit(text, (bx4 + bw / 2 - tw4 / 2, by4 + bh / 2 - th4 / 2))
 
             pygame.display.update()
 
