@@ -8,6 +8,9 @@ import sys
 import math
 from win32com.shell import shell, shellcon
 from Button import Button
+import time
+import signal
+from inputimeout import inputimeout, TimeoutOccurred
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 900
@@ -43,7 +46,7 @@ def quit():
     sys.exit()
 
 
-def begin(imgl, rnum=0):
+def begin(imgl, rnum=0, num=0):
     if rnum == 0:
         rnum = random.randint(0, imgl)
     # rnum = 6749
@@ -59,35 +62,64 @@ def begin(imgl, rnum=0):
     # if image.get_width() > WIN_WIDTH:
     #     r1 = WIN_WIDTH / image.get_width()
 
-    r = WIN_HEIGHT / image.get_height()
-    r1 = WIN_WIDTH / image.get_width()
+    info = pygame.display.Info()
+    wm, hm = info.current_w, info.current_h
+    print(num)
+    if int(num) == 1:
+        print("num is 1 ", wm, hm, image.get_width(), image.get_height())
+        win = pygame.display.set_mode((wm, hm), pygame.RESIZABLE)
+        r = (hm - 120) / image.get_height()
+        r1 = wm / image.get_width()
+        tmp = min(r, r1)
+        newimg = pygame.transform.rotozoom(image, 0, tmp)
+        win.blit(newimg, ((wm - newimg.get_width()) / 2, 0))
+    else:
+        print("num is 2 ", WIN_WIDTH, WIN_HEIGHT, image.get_width(), image.get_height())
+        r = WIN_HEIGHT / image.get_height()
+        r1 = WIN_WIDTH / image.get_width()
+        tmp = min(r, r1)
+        newimg = pygame.transform.rotozoom(image, 0, tmp)
+        win = pygame.display.set_mode((newimg.get_width(), newimg.get_height() + 80), pygame.RESIZABLE)
+        win.blit(newimg, (0, 0))
 
-    # print(r)
-    # print(r1)
-    tmp = min(r, r1)
+    # print(r, r1)
+    # tmp = min(r, r1)
+    #
+    # newimg = pygame.transform.rotozoom(image, 0, tmp)
 
-    newimg = pygame.transform.rotozoom(image, 0, tmp)
-
-    win = pygame.display.set_mode((newimg.get_width(), newimg.get_height() + 80), pygame.RESIZABLE)
+    # win = pygame.display.set_mode((newimg.get_width(), newimg.get_height() + 80), pygame.RESIZABLE)
     # win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 
     pygame.display.set_caption('图片浏览')
-    win.blit(newimg, (0, 0))
-
     font = pygame.font.Font(FONT, 26)
 
     return win, newimg, font, rnum, image
 
 
 def main():
-    pygame.init()
-
     file = 'E:\\迅雷下载\\'
     if os.path.exists(file) == False:
         file = 'F:\\迅雷下载\\'
 
+    print("请选择窗口的大小：1：全屏，2：正常比例")
+    num = input("请选择：")
+    # try:
+    #     num = inputimeout(prompt='请选择：(5秒后将随机选择)', timeout=5)
+    # except TimeoutOccurred:
+    #     num = random.randint(1, 2)
+    #     print('已随机选择！', num)
+
+    if num == "":
+        num = 1
+    if int(num) == 1:
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(0, 30)
+    else:
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(500, 30)
+
+    pygame.init()
+
     imgl = imglen(file)
-    win, newimg, font, rnum, image = begin(imgl)
+    win, newimg, font, rnum, image = begin(imgl, 0, num)
     pygame.display.flip()
 
     # bx1, by1, bw, bh = 30, 100 + 20, 100, 50
@@ -121,9 +153,9 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
 
                 if btn1.rect.collidepoint(event.pos):
-                    win, newimg, font, rnum, image = begin(imgl, rnum - 1)
+                    win, newimg, font, rnum, image = begin(imgl, rnum - 1, num)
                 if btn2.rect.collidepoint(event.pos):
-                    win, newimg, font, rnum, image = begin(imgl)
+                    win, newimg, font, rnum, image = begin(imgl, 0, num)
                 if btn3.rect.collidepoint(event.pos):
                     if not DEBUG:
                         res = shell.SHFileOperation((0, shellcon.FO_DELETE, ARR[rnum], None,
@@ -133,9 +165,9 @@ def main():
                             os.system('del ' + ARR[rnum])
                             ARR.pop(rnum)
                     print('del over; leave is ', len(ARR))
-                    win, newimg, font, rnum, image = begin(imgl, rnum)
+                    win, newimg, font, rnum, image = begin(imgl, rnum, num)
                 if btn4.rect.collidepoint(event.pos):
-                    win, newimg, font, rnum, image = begin(imgl, rnum + 1)
+                    win, newimg, font, rnum, image = begin(imgl, rnum + 1, num)
 
                 # x, y = event.pos
 
@@ -161,16 +193,20 @@ def main():
 
             y, w, h = newimg.get_height() + 20, 100, 50
 
-            btn1 = Button(30, y, w, h, '上一页', GREEN, FONT)
+            x1, x2, x3, x4 = 30, 290, 400, 140
+
+            if int(num) == 1:
+                x1, x2, x3, x4 = 600, 1000, 1110, 710
+            btn1 = Button(x1, y, w, h, '上一页', GREEN, FONT)
             btn1.draw(win)
 
-            btn2 = Button(290, y, w, h, '刷新', GREEN, FONT)
+            btn2 = Button(x2, y, w, h, '刷新', GREEN, FONT)
             btn2.draw(win)
 
-            btn3 = Button(400, y, w, h, '删除', RED, FONT)
+            btn3 = Button(x3, y, w, h, '删除', RED, FONT)
             btn3.draw(win)
 
-            btn4 = Button(140, y, w, h, '下一页', GREEN, FONT)
+            btn4 = Button(x4, y, w, h, '下一页', GREEN, FONT)
             btn4.draw(win)
 
             # bx1, by1, bw, bh = 30, newimg.get_height() + 20, 100, 50
