@@ -46,7 +46,7 @@ def quit():
     sys.exit()
 
 
-def begin(imgl, rnum=0, num=0):
+def begin(imgl, rnum=0, num=0, wm=0, hm=0):
     if rnum == 0:
         rnum = random.randint(0, imgl)
     # rnum = 6749
@@ -62,8 +62,8 @@ def begin(imgl, rnum=0, num=0):
     # if image.get_width() > WIN_WIDTH:
     #     r1 = WIN_WIDTH / image.get_width()
 
-    info = pygame.display.Info()
-    wm, hm = info.current_w, info.current_h
+    # info = pygame.display.Info()
+    # wm, hm = info.current_w, info.current_h
     print(num)
     if int(num) == 1:
         print("num is 1 ", wm, hm, image.get_width(), image.get_height())
@@ -118,8 +118,11 @@ def main():
 
     pygame.init()
 
+    info = pygame.display.Info()
+    wm, hm = info.current_w, info.current_h - 30
+
     imgl = imglen(file)
-    win, newimg, font, rnum, image = begin(imgl, 0, num)
+    win, newimg, font, rnum, image = begin(imgl, 0, num, wm, hm)
     pygame.display.flip()
 
     # bx1, by1, bw, bh = 30, 100 + 20, 100, 50
@@ -153,9 +156,9 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
 
                 if btn1.rect.collidepoint(event.pos):
-                    win, newimg, font, rnum, image = begin(imgl, rnum - 1, num)
+                    win, newimg, font, rnum, image = begin(imgl, rnum - 1, num, wm, hm)
                 if btn2.rect.collidepoint(event.pos):
-                    win, newimg, font, rnum, image = begin(imgl, 0, num)
+                    win, newimg, font, rnum, image = begin(imgl, 0, num, wm, hm)
                 if btn3.rect.collidepoint(event.pos):
                     if not DEBUG:
                         res = shell.SHFileOperation((0, shellcon.FO_DELETE, ARR[rnum], None,
@@ -165,9 +168,9 @@ def main():
                             os.system('del ' + ARR[rnum])
                             ARR.pop(rnum)
                     print('del over; leave is ', len(ARR))
-                    win, newimg, font, rnum, image = begin(imgl, rnum, num)
+                    win, newimg, font, rnum, image = begin(imgl, rnum, num, wm, hm)
                 if btn4.rect.collidepoint(event.pos):
-                    win, newimg, font, rnum, image = begin(imgl, rnum + 1, num)
+                    win, newimg, font, rnum, image = begin(imgl, rnum + 1, num, wm, hm)
 
                 # x, y = event.pos
 
