@@ -11,6 +11,8 @@ from Button import Button
 import time
 import signal
 from inputimeout import inputimeout, TimeoutOccurred
+import tkinter as tk
+from tkinter import filedialog
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 900
@@ -97,9 +99,20 @@ def begin(imgl, rnum=0, num=0, wm=0, hm=0):
 
 
 def main():
-    file = 'E:\\迅雷下载\\'
-    if os.path.exists(file) == False:
-        file = 'F:\\迅雷下载\\'
+    pygame.init()
+
+    root = tk.Tk()
+    root.withdraw()
+
+    file = filedialog.askdirectory()
+    print(file)
+
+    if file == "":
+        quit()
+
+    # file = 'E:\\迅雷下载\\'
+    # if os.path.exists(file) == False:
+    #     file = 'F:\\迅雷下载\\'
 
     print("请选择窗口的大小：1：全屏，2：正常比例")
     num = input("请选择：")
@@ -116,12 +129,11 @@ def main():
     else:
         os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(500, 30)
 
-    pygame.init()
-
     info = pygame.display.Info()
     wm, hm = info.current_w, info.current_h - 30
 
     imgl = imglen(file)
+    print("len ", imgl)
     win, newimg, font, rnum, image = begin(imgl, 0, num, wm, hm)
     pygame.display.flip()
 
