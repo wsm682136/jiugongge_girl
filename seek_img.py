@@ -137,6 +137,8 @@ def main():
     win, newimg, font, rnum, image = begin(imgl, 0, num, wm, hm)
     pygame.display.flip()
 
+    font1 = pygame.font.Font(FONT, 18)
+
     # bx1, by1, bw, bh = 30, 100 + 20, 100, 50
     # button = Button(bx1, by1, bw, bh, '上一页', GREEN, FONT)
     # button.draw(win)
@@ -180,8 +182,12 @@ def main():
                             os.system('del ' + ARR[rnum])
                             ARR.pop(rnum)
                     print('del over; leave is ', len(ARR))
+                    if rnum + 1 == len(ARR):
+                        rnum = 0
                     win, newimg, font, rnum, image = begin(imgl, rnum, num, wm, hm)
                 if btn4.rect.collidepoint(event.pos):
+                    if rnum + 1 == len(ARR):
+                        rnum = -1
                     win, newimg, font, rnum, image = begin(imgl, rnum + 1, num, wm, hm)
 
                 # x, y = event.pos
@@ -223,6 +229,14 @@ def main():
 
             btn4 = Button(x4, y, w, h, '下一页', GREEN, FONT)
             btn4.draw(win)
+
+            t = "index is " + str(rnum)
+            t1 = "sum len is " + str(len(ARR))
+            txt = font1.render(t, True, RED)
+            win.blit(txt, (x4 + 130, y + 5))
+            txt = font1.render(t1, True, RED)
+            win.blit(txt, (x4 + 130, y + 30))
+            pygame.display.update()
 
             # bx1, by1, bw, bh = 30, newimg.get_height() + 20, 100, 50
             # pygame.draw.rect(win, GREEN, (bx1, by1, bw, bh))
