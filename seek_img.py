@@ -44,6 +44,13 @@ def imglen(file):
     return len(ARR)
 
 
+def winWH():
+    root = tk.Tk()
+    root.withdraw()
+    winX, winY = root.winfo_screenwidth(), root.winfo_screenheight()
+    return winX, winY
+
+
 def quit():
     pygame.quit()
     sys.exit()
@@ -102,8 +109,10 @@ def begin(imgl, rnum=0, num=0, wm=0, hm=0):
 def main():
     pygame.init()
 
-    root = tk.Tk()
-    root.withdraw()
+    # root = tk.Tk()
+    # root.withdraw()
+
+    winX, winY = winWH()
 
     file = filedialog.askdirectory()
     print(file)
@@ -191,8 +200,9 @@ def main():
                         rnum = -1
                     win, newimg, font, rnum, image = begin(imgl, rnum + 1, num, wm, hm)
 
-                if btn5.rect.collidepoint(event.pos):
-                    os.system("explorer.exe %s" % DEC)
+                if num == 1:
+                    if btn5.rect.collidepoint(event.pos):
+                        os.system("explorer.exe %s" % DEC)
 
                 # x, y = event.pos
 
@@ -218,32 +228,35 @@ def main():
 
             y, w, h = newimg.get_height() + 20, 100, 50
 
-            x1, x2, x3, x4 = 30, 290, 400, 140
+            x1, x2, x3, x4, x5 = 30, 290, 400, 140, 550
 
+            btnY = y
             if int(num) == 1:
-                x1, x2, x3, x4 = 600, 1000, 1110, 710
-            btn1 = Button(x1, y, w, h, '上一页', GREEN, FONT)
+                x1, x2, x3, x4, x5 = 600, 1000, 1110, 710, 1310
+                btnY = winY - 130
+            btn1 = Button(x1, btnY, w, h, '上一页', GREEN, FONT)
             btn1.draw(win)
 
-            btn2 = Button(x2, y, w, h, '刷新', GREEN, FONT)
+            btn2 = Button(x2, btnY, w, h, '刷新', GREEN, FONT)
             btn2.draw(win)
 
-            btn3 = Button(x3, y, w, h, '删除', RED, FONT)
+            btn3 = Button(x3, btnY, w, h, '删除', RED, FONT)
             btn3.draw(win)
 
-            btn4 = Button(x4, y, w, h, '下一页', GREEN, FONT)
+            btn4 = Button(x4, btnY, w, h, '下一页', GREEN, FONT)
             btn4.draw(win)
 
-            btn5 = Button(x3 + 200, y, w, h, 'REC', RED, FONT)
-            btn5.draw(win)
+            if num == 1:
+                btn5 = Button(x5, btnY, w, h, 'REC', RED, FONT)
+                btn5.draw(win)
 
-            t = "index is " + str(rnum)
-            t1 = "sum len is " + str(len(ARR))
-            txt = font1.render(t, True, RED)
-            win.blit(txt, (x4 + 130, y + 5))
-            txt = font1.render(t1, True, RED)
-            win.blit(txt, (x4 + 130, y + 30))
-            pygame.display.update()
+                t = "index is " + str(rnum)
+                t1 = "sum len is " + str(len(ARR))
+                txt = font1.render(t, True, RED)
+                win.blit(txt, (x4 + 130, btnY + 5))
+                txt = font1.render(t1, True, RED)
+                win.blit(txt, (x4 + 130, btnY + 30))
+                pygame.display.update()
 
             # bx1, by1, bw, bh = 30, newimg.get_height() + 20, 100, 50
             # pygame.draw.rect(win, GREEN, (bx1, by1, bw, bh))
