@@ -136,8 +136,10 @@ def main():
         num = 1
     if int(num) == 1:
         os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(0, 30)
+        fontSize = 26
     else:
         os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(500, 30)
+        fontSize = 20
 
     info = pygame.display.Info()
     wm, hm = info.current_w, info.current_h - 30
@@ -182,8 +184,12 @@ def main():
                 if btn1.rect.collidepoint(event.pos):
                     win, newimg, font, rnum, image = begin(imgl, rnum - 1, num, wm, hm)
                 if btn2.rect.collidepoint(event.pos):
-                    win, newimg, font, rnum, image = begin(imgl, 0, num, wm, hm)
+                    if rnum + 1 == len(ARR):
+                        rnum = -1
+                    win, newimg, font, rnum, image = begin(imgl, rnum + 1, num, wm, hm)
                 if btn3.rect.collidepoint(event.pos):
+                    win, newimg, font, rnum, image = begin(imgl, 0, num, wm, hm)
+                if btn4.rect.collidepoint(event.pos):
                     if not DEBUG:
                         res = shell.SHFileOperation((0, shellcon.FO_DELETE, ARR[rnum], None,
                                                      shellcon.FOF_SILENT | shellcon.FOF_ALLOWUNDO | shellcon.FOF_NOCONFIRMATION,
@@ -195,10 +201,6 @@ def main():
                     if rnum + 1 == len(ARR):
                         rnum = 0
                     win, newimg, font, rnum, image = begin(imgl, rnum, num, wm, hm)
-                if btn4.rect.collidepoint(event.pos):
-                    if rnum + 1 == len(ARR):
-                        rnum = -1
-                    win, newimg, font, rnum, image = begin(imgl, rnum + 1, num, wm, hm)
 
                 if num == 1:
                     if btn5.rect.collidepoint(event.pos):
@@ -226,36 +228,38 @@ def main():
                 # if bx4 <= x <= bx4 + bw and by4 <= y <= by4 + bh:
                 #     win, newimg, font, rnum, image = begin(imgl, rnum + 1)
 
-            y, w, h = newimg.get_height() + 20, 100, 50
+            y, w, h = newimg.get_height() + 20, 80, 40
 
-            x1, x2, x3, x4, x5 = 30, 290, 400, 140, 550
+            x1, x2, x3, x4, x5 = 30, 140, 290, 400, 550
 
             btnY = y
             if int(num) == 1:
-                x1, x2, x3, x4, x5 = 600, 1000, 1110, 710, 1310
+                w, h = 100, 50
+                x1, x2, x3, x4, x5 = 600, 710, 1000, 1110, 1310
                 btnY = winY - 130
-            btn1 = Button(x1, btnY, w, h, '上一页', GREEN, FONT)
+            btn1 = Button(x1, btnY, w, h, '上一页', GREEN, FONT, fontSize)
             btn1.draw(win)
 
-            btn2 = Button(x2, btnY, w, h, '刷新', GREEN, FONT)
+            btn2 = Button(x2, btnY, w, h, '下一页', GREEN, FONT, fontSize)
             btn2.draw(win)
 
-            btn3 = Button(x3, btnY, w, h, '删除', RED, FONT)
+            btn3 = Button(x3, btnY, w, h, '刷新', GREEN, FONT, fontSize)
             btn3.draw(win)
 
-            btn4 = Button(x4, btnY, w, h, '下一页', GREEN, FONT)
+            btn4 = Button(x4, btnY, w, h, '删除', RED, FONT, fontSize)
             btn4.draw(win)
 
             if num == 1:
-                btn5 = Button(x5, btnY, w, h, 'REC', RED, FONT)
+                btn5 = Button(x5, btnY, w, h, 'REC', RED, FONT, fontSize)
                 btn5.draw(win)
 
+                tx = x2 + 130
                 t = "index is " + str(rnum)
                 t1 = "sum len is " + str(len(ARR))
                 txt = font1.render(t, True, RED)
-                win.blit(txt, (x4 + 130, btnY + 5))
+                win.blit(txt, (tx, btnY + 5))
                 txt = font1.render(t1, True, RED)
-                win.blit(txt, (x4 + 130, btnY + 30))
+                win.blit(txt, (tx, btnY + 30))
                 pygame.display.update()
 
             # bx1, by1, bw, bh = 30, newimg.get_height() + 20, 100, 50
