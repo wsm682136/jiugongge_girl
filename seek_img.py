@@ -27,6 +27,7 @@ MACRANDTIME = 100
 ARR = []
 DEBUG = False
 FONT = 'C:\Windows\Fonts\simhei.ttf'
+DEC = r'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\回收站.lnk'
 
 
 def getimgs(file):
@@ -190,6 +191,9 @@ def main():
                         rnum = -1
                     win, newimg, font, rnum, image = begin(imgl, rnum + 1, num, wm, hm)
 
+                if btn5.rect.collidepoint(event.pos):
+                    os.system("explorer.exe %s" % DEC)
+
                 # x, y = event.pos
 
                 # if bx2 <= x <= bx2 + bw and by2 <= y <= by2 + bh:
@@ -229,6 +233,9 @@ def main():
 
             btn4 = Button(x4, y, w, h, '下一页', GREEN, FONT)
             btn4.draw(win)
+
+            btn5 = Button(x3 + 200, y, w, h, 'REC', RED, FONT)
+            btn5.draw(win)
 
             t = "index is " + str(rnum)
             t1 = "sum len is " + str(len(ARR))
