@@ -14,6 +14,8 @@ from inputimeout import inputimeout, TimeoutOccurred
 import tkinter as tk
 from tkinter import filedialog
 
+# from Input import Input
+
 WIN_WIDTH = 800
 WIN_HEIGHT = 900
 WHITE = (255, 255, 255)
@@ -38,7 +40,10 @@ def getimgs(file):
                 yield fullname
 
 
-def imglen(file):
+def imglen(file, i=0):
+    if i == 1:
+        ARR.clear()
+
     for i in getimgs(file):
         ARR.append(i)
     return len(ARR)
@@ -51,17 +56,30 @@ def winWH():
     return winX, winY
 
 
+def hum_convert(value):
+    units = ["B", "KB", "MB", "GB", "TB", "PB"]
+    size = 1024.0
+    for i in range(len(units)):
+        if (value / size) < 1:
+            return "%.2f%s" % (value, units[i])
+        value = value / size
+
+
 def quit():
     pygame.quit()
     sys.exit()
 
 
-def begin(imgl, rnum=0, num=0, wm=0, hm=0):
-    if rnum == 0:
-        rnum = random.randint(0, imgl)
+def begin(imgl, rnum=0, num=0, wm=0, hm=0, rs=0, file=''):
+    if rnum == 0 or rnum == len(ARR):
+        rnum = random.randint(1, imgl - 1)
+
     # rnum = 6749
-    print("index is ", rnum, " addr is ", ARR[rnum])
+    print("index is ", rnum, " imgl is ", imgl, " arr len is ", len(ARR))
+    print("addr is ", ARR[rnum])
     image = pygame.image.load(ARR[rnum])
+
+    filesize = hum_convert(os.stat(ARR[rnum]).st_size)
 
     # print(image.get_height(), WIN_HEIGHT)
     # print(image.get_width(), WIN_WIDTH)
@@ -74,7 +92,7 @@ def begin(imgl, rnum=0, num=0, wm=0, hm=0):
 
     # info = pygame.display.Info()
     # wm, hm = info.current_w, info.current_h
-    print(num)
+
     if int(num) == 1:
         print("num is 1 ", wm, hm, image.get_width(), image.get_height())
         win = pygame.display.set_mode((wm, hm), pygame.RESIZABLE)
@@ -103,7 +121,7 @@ def begin(imgl, rnum=0, num=0, wm=0, hm=0):
     pygame.display.set_caption('图片浏览')
     font = pygame.font.Font(FONT, 26)
 
-    return win, newimg, font, rnum, image
+    return win, newimg, font, rnum, image, filesize
 
 
 def main():
@@ -116,7 +134,7 @@ def main():
 
     file = filedialog.askdirectory()
     print(file)
-
+    # file = r"C:\Users\Administrator\Pictures\spinaste"
     if file == "":
         quit()
 
@@ -131,7 +149,7 @@ def main():
     # except TimeoutOccurred:
     #     num = random.randint(1, 2)
     #     print('已随机选择！', num)
-
+    # num = 1
     if num == "":
         num = 1
     if int(num) == 1:
@@ -146,7 +164,7 @@ def main():
 
     imgl = imglen(file)
     print("len ", imgl)
-    win, newimg, font, rnum, image = begin(imgl, 0, num, wm, hm)
+    win, newimg, font, rnum, image, filesize = begin(imgl, 0, num, wm, hm)
     pygame.display.flip()
 
     font1 = pygame.font.Font(FONT, 18)
@@ -163,7 +181,6 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     quit()
-
             if event.type == pygame.VIDEORESIZE:
                 w = event.w
                 h = event.h
@@ -181,14 +198,20 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
 
+                if btn0.rect.collidepoint(event.pos):
+                    win, newimg, font, rnum, image, filesize = begin(imgl, 1, num, wm, hm)
+
                 if btn1.rect.collidepoint(event.pos):
-                    win, newimg, font, rnum, image = begin(imgl, rnum - 1, num, wm, hm)
+                    win, newimg, font, rnum, image, filesize = begin(imgl, rnum - 1, num, wm, hm)
+
                 if btn2.rect.collidepoint(event.pos):
                     if rnum + 1 == len(ARR):
                         rnum = -1
-                    win, newimg, font, rnum, image = begin(imgl, rnum + 1, num, wm, hm)
+                    win, newimg, font, rnum, image, filesize = begin(imgl, rnum + 1, num, wm, hm)
+
                 if btn3.rect.collidepoint(event.pos):
-                    win, newimg, font, rnum, image = begin(imgl, 0, num, wm, hm)
+                    win, newimg, font, rnum, image, filesize = begin(imgl, 0, num, wm, hm)
+
                 if btn4.rect.collidepoint(event.pos):
                     if not DEBUG:
                         res = shell.SHFileOperation((0, shellcon.FO_DELETE, ARR[rnum], None,
@@ -200,7 +223,14 @@ def main():
                     print('del over; leave is ', len(ARR))
                     if rnum + 1 == len(ARR):
                         rnum = 0
-                    win, newimg, font, rnum, image = begin(imgl, rnum, num, wm, hm)
+                    win, newimg, font, rnum, image, filesize = begin(imgl, rnum, num, wm, hm)
+
+                if btnx.rect.collidepoint(event.pos):
+                    win, newimg, font, rnum, image, filesize = begin(imgl, len(ARR) - 1, num, wm, hm)
+
+                if btnr.rect.collidepoint(event.pos):
+                    imgl = imglen(file, 1)
+                    win, newimg, font, rnum, image, filesize = begin(imgl, 0, num, wm, hm)
 
                 if num == 1:
                     if btn5.rect.collidepoint(event.pos):
@@ -235,8 +265,12 @@ def main():
             btnY = y
             if int(num) == 1:
                 w, h = 100, 50
-                x1, x2, x3, x4, x5 = 600, 710, 1000, 1110, 1310
+                x0, x1, x2, x3, x4, xx, xr, x5 = 490, 600, 710, 1000, 1110, 1220, 1440, 1550,
                 btnY = winY - 130
+
+            btn0 = Button(x0, btnY, w, h, '首页', GREEN, FONT, fontSize)
+            btn0.draw(win)
+
             btn1 = Button(x1, btnY, w, h, '上一页', GREEN, FONT, fontSize)
             btn1.draw(win)
 
@@ -249,6 +283,18 @@ def main():
             btn4 = Button(x4, btnY, w, h, '删除', RED, FONT, fontSize)
             btn4.draw(win)
 
+            btnx = Button(xx, btnY, w, h, '尾页', GREEN, FONT, fontSize)
+            btnx.draw(win)
+
+            btnr = Button(xr, btnY, w, h, '重载', GREEN, FONT, fontSize)
+            btnr.draw(win)
+
+            # inp1 = Input(x2 + 130, btnY, 130, 25)
+            # inp1.draw(win)
+            #
+            # inp2 = Input(x2 + 130, btnY + 25, 130, 25)
+            # inp2.draw(win)
+
             if num == 1:
                 btn5 = Button(x5, btnY, w, h, 'REC', RED, FONT, fontSize)
                 btn5.draw(win)
@@ -260,7 +306,13 @@ def main():
                 win.blit(txt, (tx, btnY + 5))
                 txt = font1.render(t1, True, RED)
                 win.blit(txt, (tx, btnY + 30))
-                pygame.display.update()
+
+            t = "file is " + str(filesize)
+            txt = font1.render(t, True, WHITE)
+            win.blit(txt, (120, 100))
+            t1 = "file size is " + str(ARR[rnum])  # os.path.basename()
+            txt1 = font1.render(t1, True, WHITE)
+            win.blit(txt1, (120, 120))
 
             # bx1, by1, bw, bh = 30, newimg.get_height() + 20, 100, 50
             # pygame.draw.rect(win, GREEN, (bx1, by1, bw, bh))
