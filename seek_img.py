@@ -28,7 +28,7 @@ CELLNUMS = VHNUMS * VHNUMS
 MACRANDTIME = 100
 ARR = []
 DEBUG = False
-FONT = 'C:\Windows\Fonts\simhei.ttf'
+FONT = r'C:\Windows\Fonts\simhei.ttf'
 DEC = r'C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\回收站.lnk'
 
 
@@ -142,6 +142,17 @@ def main():
     # if os.path.exists(file) == False:
     #     file = 'F:\\迅雷下载\\'
 
+    imgl = imglen(file)
+    print("len ", imgl)
+    if imgl == 0:
+        while True:
+            print("not find img, reselect file ····")
+            time.sleep(1)
+            file = filedialog.askdirectory()
+            print(file)
+            if imglen(file) > 0:
+                break
+
     print("请选择窗口的大小：1：全屏，2：正常比例")
     num = input("请选择：")
     # try:
@@ -162,8 +173,6 @@ def main():
     info = pygame.display.Info()
     wm, hm = info.current_w, info.current_h - 30
 
-    imgl = imglen(file)
-    print("len ", imgl)
     win, newimg, font, rnum, image, filesize = begin(imgl, 0, num, wm, hm)
     pygame.display.flip()
 
