@@ -12,6 +12,7 @@ import os, sys, time
 import pygame
 import tkinter as tk
 from tkinter import filedialog
+import Common
 
 MW = 500
 MH = 400
@@ -61,14 +62,26 @@ def main():
     win = pygame.display.set_mode((MW, MH))
     win.fill(WHITE)
 
-    btn1 = Button(100, 100, 250, 30, '选择要查看的文件夹', BLACK, FONT, 20)
+    btn1 = Common.Button(100, 100, 250, 30, '选择要查看的文件夹', BLACK, FONT, 20)
     btn1.draw(win)
 
-    btn2 = Button(100, 200, 100, 30, '全屏浏览', BLACK, FONT)
+    btn2 = Common.Button(100, 200, 100, 30, '全屏浏览', BLACK, FONT, 20)
     btn2.draw(win)
 
-    btn3 = Button(300, 200, 100, 30, '开始浏览', BLACK, FONT)
+    btn3 = Common.Button(300, 200, 100, 30, '开始浏览', BLACK, FONT, 20)
     btn3.draw(win)
+
+    lbl1 = Common.Lable(400, 200, 100, 30, '开始浏览', WHITE, 20)
+    lbl1.draw(win)
+
+    # btn1 = Button(100, 100, 250, 30, '选择要查看的文件夹', BLACK, FONT, 20)
+    # btn1.draw(win)
+    #
+    # btn2 = Button(100, 200, 100, 30, '全屏浏览', BLACK, FONT)
+    # btn2.draw(win)
+    #
+    # btn3 = Button(300, 200, 100, 30, '开始浏览', BLACK, FONT)
+    # btn3.draw(win)
 
     pygame.display.flip()
 
