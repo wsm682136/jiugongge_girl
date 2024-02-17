@@ -31,3 +31,6 @@ class Button:
                 self.clicked = True
         elif event.type == pygame.MOUSEBUTTONUP:
             self.clicked = False
+
+
+
