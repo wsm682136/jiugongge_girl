@@ -144,14 +144,14 @@ def main():
 
     imgl = imglen(file)
     print("len ", imgl)
-    if imgl == 0:
-        while True:
-            print("not find img, reselect file ····")
-            time.sleep(1)
-            file = filedialog.askdirectory()
-            print(file)
-            if imglen(file) > 0:
-                break
+    #if imgl == 0:
+    #    while True:
+    #        print("not find img, reselect file ····")
+    #        time.sleep(1)
+    #        file = filedialog.askdirectory()
+    #        print(file)
+    #        if imglen(file) > 0:
+    #            break
 
     print("请选择窗口的大小：1：全屏，2：正常比例")
     num = input("请选择：")
@@ -304,7 +304,7 @@ def main():
             # inp2 = Input(x2 + 130, btnY + 25, 130, 25)
             # inp2.draw(win)
 
-            if num == 1:
+            if int(num) == 1:
                 btn5 = Button(x5, btnY, w, h, 'REC', RED, FONT, fontSize)
                 btn5.draw(win)
 
